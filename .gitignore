@@ -63,4 +63,4 @@ tsconfig.tsbuildinfo
 # Editor & OS
 Thumbs.db
 .idea/
-
+.vercel/
