@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "observationDate": "2026-08-08",
+  "source": "REFERENCE_REVIEW.md",
+  "rows": [
+    {
+      "reference": "https://seamui.dev/",
+      "capability": "tactile-control-feedback",
+      "status": "exceeded-in-scope",
+      "evidenceClass": "live-dom-and-visible-specimens",
+      "adaptedAs": "CSS-only button, chip, disclosure, focus, and reduced-motion states",
+      "unknowns": []
+    },
+    {
+      "reference": "https://studiomicho.com/",
+      "capability": "operational-dashboard-density-and-explicit-delivery-loop",
+      "status": "matched-in-scope",
+      "evidenceClass": "live-page-copy-and-demo-labels",
+      "adaptedAs": "compact evidence-console layout and import-review-export journey",
+      "unknowns": ["private implementation details"]
+    },
+    {
+      "reference": "https://financetest-nine.vercel.app/",
+      "capability": "guided-progressive-first-use",
+      "status": "exceeded-in-scope",
+      "evidenceClass": "live-dom-step-1-of-5",
+      "adaptedAs": "one-click workspace entry and credential-free sample result",
+      "unknowns": []
+    },
+    {
+      "reference": "https://calcurama.com/",
+      "capability": "searchable-compact-tool-discovery",
+      "status": "matched-in-scope",
+      "evidenceClass": "live-dom-search-and-category-surface",
+      "adaptedAs": "statement search, filters, quick periods, and export",
+      "unknowns": []
+    },
+    {
+      "reference": "https://www.lendtrain.com/",
+      "capability": "input-result-next-action-explanation",
+      "status": "matched-in-scope",
+      "evidenceClass": "live-page-process-and-caveat-copy",
+      "adaptedAs": "parser explanation, source-backed review, and explicit export handoff",
+      "unknowns": ["financial product calculations excluded"]
+    },
+    {
+      "reference": "https://apps.apple.com/us/app/pipp-money/id6766039759",
+      "capability": "grouped-money-context-over-time",
+      "status": "matched-in-scope",
+      "evidenceClass": "app-store-product-description",
+      "adaptedAs": "dashboard summaries and statement period filters",
+      "unknowns": ["native app interaction details"]
+    },
+    {
+      "reference": "https://rallyearth.com/",
+      "capability": "unknown",
+      "status": "unknown-pending-recon",
+      "evidenceClass": "timeout",
+      "adaptedAs": null,
+      "unknowns": ["site unavailable in inspection session"]
+    },
+    {
+      "reference": "https://thepmtoolkit.app/",
+      "capability": "unknown",
+      "status": "unknown-pending-recon",
+      "evidenceClass": "consent-surface-only",
+      "adaptedAs": null,
+      "unknowns": ["no usable product surface available"]
+    },
+    {
+      "reference": "https://ticktaco.app/",
+      "capability": "unknown",
+      "status": "unknown-pending-recon",
+      "evidenceClass": "unreadable-dom",
+      "adaptedAs": null,
+      "unknowns": ["interaction surface could not be verified"]
+    }
+  ]
+}

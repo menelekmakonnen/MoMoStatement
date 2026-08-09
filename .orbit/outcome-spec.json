@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "product": "Mobile Money Statement",
+  "status": "implementation-in-progress",
+  "intendedResult": "Turn Ghana mobile-money messages into a trustworthy, searchable statement with exact values, local control, and exportable handoff.",
+  "authority": {
+    "operator": "statement-owner",
+    "dataAuthority": "parsed-transaction-with-original-source-provenance",
+    "approval": "operator-owned",
+    "payment": "none-enabled-beta"
+  },
+  "domainObjects": [
+    "raw-message",
+    "parsed-transaction",
+    "provider",
+    "balance",
+    "category",
+    "filter-state",
+    "export-artifact"
+  ],
+  "stateMachine": {
+    "happyPath": ["empty", "input-ready", "parsing", "parsed", "reviewed", "exported"],
+    "exceptions": ["invalid-input", "partial-parse", "empty-result", "export-failed"],
+    "recovery": ["retry-parse", "inspect-source", "clear-local-records", "return-to-import"]
+  },
+  "primaryJourney": [
+    "landing",
+    "import-or-sample",
+    "capture-or-parse",
+    "review-and-filter",
+    "inspect-source",
+    "export",
+    "correct-or-reimport"
+  ],
+  "originalInteractionGrammar": {
+    "density": "compact-evidence-console",
+    "type": "Inter",
+    "motion": "short-css-transitions-with-reduced-motion",
+    "signatureInteraction": "source-backed-transaction-disclosure",
+    "deliberateExclusions": ["emoji-ui", "fake-ai-claims", "unsupported-pdf-import", "dead-cta", "heavy-js-animation"]
+  },
+  "references": "REFERENCE_REVIEW.md",
+  "acceptance": "ACCEPTANCE_EVIDENCE.md",
+  "advantageContract": ".orbit/outcome-benchmarks.json"
+}

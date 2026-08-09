@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "capabilities": [
+    {
+      "id": "parse-momo-messages",
+      "input": "text-or-supported-file",
+      "output": "parsed-transactions-with-raw-source",
+      "permission": "local-user-input",
+      "cost": "none-beta",
+      "freshness": "on-demand",
+      "failure": ["unsupported-format", "empty-input", "partial-parse"],
+      "evidence": "parser-result-and-source-disclosure",
+      "handoff": "statement-review"
+    },
+    {
+      "id": "capture-messages-web-locally",
+      "input": "user-paired-google-messages-web-and-selected-providers",
+      "output": "bounded-parser-candidates-from-rendered-message-history",
+      "permission": "explicit-local-user-start-and-stop",
+      "cost": "none-beta",
+      "freshness": "on-demand",
+      "failure": ["helper-not-installed", "awaiting-pairing", "needs-google-confirmation", "dom-not-recognized", "capture-stopped"],
+      "evidence": "capture-progress-completion-or-explicit-error-and-source-backed-rows",
+      "handoff": "statement-review"
+    },
+    {
+      "id": "review-statement",
+      "input": "stored-transactions-and-filter-state",
+      "output": "searchable-filtered-transaction-view",
+      "permission": "local-user",
+      "cost": "none-beta",
+      "freshness": "local-state",
+      "failure": ["no-transactions", "no-matching-transactions"],
+      "evidence": "visible-row-count-and-filter-controls",
+      "handoff": "source-inspection-or-export"
+    },
+    {
+      "id": "export-statement",
+      "input": "reviewed-transaction-view-and-format",
+      "output": "csv-json-or-pdf-artifact",
+      "permission": "local-user-download",
+      "cost": "none-beta",
+      "freshness": "snapshot-at-export",
+      "failure": ["export-failed"],
+      "evidence": "downloaded-artifact-and-export-summary",
+      "handoff": "user-owned-accounting-or-record-keeping"
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "status": "verified-local-run",
+  "observationDate": "2026-08-08",
+  "scenarios": [
+    {
+      "id": "first-value",
+      "name": "Landing to parsed sample",
+      "equivalentInput": "built-in sample fixture",
+      "measure": "one CTA activation reaches import and sample produces visible parsed rows",
+      "target": "pass",
+      "result": "pass",
+      "evidence": "2026-08-08 local browser: landing CTA opened #/app/import; Try sample data produced a visible 3 transactions ready state."
+    },
+    {
+      "id": "evidence-review",
+      "name": "Statement row to original source",
+      "equivalentInput": "one parsed sample transaction",
+      "measure": "row disclosure exposes provider, amount context, reference, and original source",
+      "target": "pass",
+      "result": "pass",
+      "evidence": "2026-08-08 local browser: #/app/statement row disclosure showed provider, type, fee, tax, reference, source, and Original source text."
+    },
+    {
+      "id": "local-recovery",
+      "name": "Refresh and continue review",
+      "equivalentInput": "same imported sample records",
+      "measure": "records remain available after reload and can be filtered or exported",
+      "target": "pass",
+      "result": "pass",
+      "evidence": "2026-08-08 local browser: Last 30 days retained 3 of 3 shown; reload retained 3 imported, KWEKU MENSAH, and source disclosure."
+    }
+  ],
+  "nonRegression": [
+    "exact GHS amounts remain unchanged",
+    "MTN, Telecel, and AirtelTigo labels remain available",
+    "unsupported PDF import is not advertised",
+    "core records do not require network upload",
+    "native focus and reduced-motion behaviour remain available"
+  ],
+  "claimGate": "do-not-claim-advantage-until-three-scenarios-have-current-evidence"
+}

@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "MoMo Statement local capture helper",
+  "version": "0.1.0",
+  "description": "Loads Google Messages Web conversations only after the user starts a local capture.",
+  "permissions": ["tabs"],
+  "host_permissions": [
+    "https://messages.google.com/web/*",
+    "http://localhost/*",
+    "http://127.0.0.1/*",
+    "https://momo.icuni.org/*"
+  ],
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://messages.google.com/web/*"],
+      "js": ["src/capture-engine.js", "src/messages-content.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "http://localhost/*",
+        "http://127.0.0.1/*",
+        "https://momo.icuni.org/*"
+      ],
+      "js": ["src/app-bridge-content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

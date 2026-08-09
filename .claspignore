@@ -1,0 +1,10 @@
+node_modules/**
+src/**
+dist/**
+public/**
+*.md
+*.json
+!gas/appsscript.json
+vite.config.js
+vercel.json
+v1-backup/**
