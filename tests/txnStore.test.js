@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { filterTransactions, getTransactionStats } from '../src/stores/txnStore.js';
+import { filterTransactions, getTransactionKey, getTransactionStats, previewTransactions } from '../src/stores/txnStore.js';
 
 const transactions = [
   {
@@ -42,4 +42,41 @@ test('stats are derived from the visible records and calculate net flow', () => 
     feeTotal: 1,
     count: 2,
   });
+});
+
+test('import previews deduplicate a transaction ID even when the source timestamp changes', () => {
+  const existing = [{ provider: 'MTN', txnId: 'TX-100', timestamp: '2026-08-01T10:00:00', amount: 25 }];
+  const incoming = [
+    { provider: 'MTN', txnId: 'TX-100', timestamp: '2026-08-02T10:00:00', amount: 25 },
+    { provider: 'MTN', txnId: 'TX-101', timestamp: null, amount: 30 },
+  ];
+
+  const preview = previewTransactions(existing, incoming);
+
+  assert.equal(preview.duplicateCount, 1);
+  assert.equal(preview.newTransactions.length, 1);
+  assert.equal(preview.newTransactions[0].txnId, 'TX-101');
+});
+
+test('import previews keep no-ID payments on different dates and flag similar rows', () => {
+  const existing = [{ provider: 'MTN', type: 'SENT', counterpartyName: 'Landlord', reference: 'Rent', timestamp: '2026-08-01', amount: 500 }];
+  const incoming = [{ provider: 'MTN', type: 'SENT', counterpartyName: 'Landlord', reference: 'Rent', timestamp: '2026-09-01', amount: 500 }];
+
+  const preview = previewTransactions(existing, incoming);
+
+  assert.equal(preview.duplicateCount, 0);
+  assert.equal(preview.newTransactions.length, 1);
+  assert.equal(preview.ambiguousCount, 1);
+});
+
+test('no-ID source matches remain selectable instead of being auto-discarded', () => {
+  const existing = [{ provider: 'MTN', type: 'SENT', counterpartyName: 'Landlord', reference: 'Rent', timestamp: '2026-08-01', amount: 500, rawBody: 'same source' }];
+  const incoming = [{ provider: 'MTN', type: 'SENT', counterpartyName: 'Landlord', reference: 'Rent', timestamp: '2026-08-01', amount: 500, rawBody: 'same source' }];
+
+  const preview = previewTransactions(existing, incoming);
+
+  assert.equal(getTransactionKey(incoming[0]), null);
+  assert.equal(preview.duplicateCount, 0);
+  assert.equal(preview.newTransactions.length, 1);
+  assert.equal(preview.ambiguousCount, 1);
 });

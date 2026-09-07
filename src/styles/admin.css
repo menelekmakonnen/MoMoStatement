@@ -210,3 +210,16 @@
     white-space: nowrap;
   }
 }
+
+/* Admin stays utilitarian but shares the product palette and geometry. */
+.admin-layout { background: var(--surface-base); }
+.admin-sidebar { background: var(--surface-default); border-right-color: var(--border-default); }
+.admin-sidebar-header, .admin-header { border-color: var(--border-default); }
+.admin-header { background: var(--surface-default); }
+.admin-nav-item { min-height: 44px; color: var(--ink-muted); }
+.admin-nav-item:hover { background: var(--brand-50); color: var(--ink-title); }
+.admin-nav-item.active { background: var(--brand-50); color: var(--brand-400); }
+.admin-table-wrapper { background: var(--surface-default); border-color: var(--border-default); border-radius: var(--radius-lg); }
+.admin-table th { background: var(--surface-elevated); color: var(--ink-muted); }
+.admin-table th, .admin-table td { border-color: var(--border-subtle); }
+.god-mode-danger { background: var(--error-bg); border-color: var(--error-400) !important; }

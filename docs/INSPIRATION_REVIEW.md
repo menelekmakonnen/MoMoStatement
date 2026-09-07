@@ -1,12 +1,16 @@
 # MoMo Statement reference review
 
-Reviewed 2026-08-08 against `ICUNI_Build_Standards.md` §20. The sources below are inspiration and evidence for mechanisms, not visual templates. MoMo Statement keeps its own product identity, copy, parser model, and interaction grammar.
+Reviewed 2026-08-08 as a mechanism and UX reference set. The sources below are inspiration and evidence for mechanisms, not visual templates. Astra's product direction in [`PRODUCT_DIRECTION.md`](PRODUCT_DIRECTION.md) supersedes the earlier visual treatment while preserving the source-led interaction grammar.
+
+## 2026-09-07 live refresh
+
+The most relevant public surfaces were checked again before implementation. [Mix Analyzer](https://mixanalytic.com/) reinforced the value of an explicitly labelled illustrative result and a score that leads to a specific next check; [JotWeave](https://www.jotweave.com/) reinforced keeping raw source attached to the next review action; and [SeamUI](https://seamui.dev/) reinforced short, state-driven touch feedback owned by the component rather than decorative motion. These mechanisms became the working sample, proof strip/source disclosure, and restrained transition rules in the Astra direction. Clyde Survival, Calcurama, EventFlow, and the supplied finance-test deployment could not all be independently fetched in this refresh, so their earlier evidence labels remain unchanged rather than being upgraded.
 
 ## Selected observations
 
 | Reference | Evidence class | Transferable mechanism | MoMo Statement adaptation |
 | --- | --- | --- | --- |
-| [Mix Analyzer](https://mixanalytic.com/) | `LIVE_OBSERVED` | A sample report appears before commitment; scores lead to specific next checks; illustrative, unavailable, and customer-result states are labelled. | Import page has a sample fixture, explicit parse status, local-data messaging, truthful empty states, and evidence-led insight copy. |
+| [Mix Analyzer](https://mixanalytic.com/) | `LIVE_OBSERVED` | A sample report appears before commitment; scores lead to specific next checks; illustrative, unavailable, and customer-result states are labelled. | Landing has an isolated working sample, while personal imports use staged parse status, local-data messaging, truthful empty states, and evidence-led insight copy. |
 | [Pipp Money](https://apps.apple.com/us/app/pipp-money/id6766039759) | `DETAILED_PRIMARY` | Cash-flow views, multiple wallets/currencies, import/export, and privacy are framed around understanding daily money rather than merely recording transactions. | Dashboard prioritises received/sent/net flow, provider coverage, exact exports, and local-first privacy. Multi-wallet and multi-currency are deliberately not claimed yet. |
 | [Mukafi](https://mukafi.com/en) | `LIVE_OBSERVED` | A focused calculator asks for only the inputs needed, explains the result, shows a breakdown, and keeps privacy and source context visible. | The statement keeps the first import short, exposes fee/tax/reference/source details on demand, and makes the export contract explicit. Legal calculations are outside this product boundary. |
 | [Jotweave](https://www.jotweave.com/) | `LIVE_OBSERVED` | The first surface answers what is due, waiting, or needs review; raw capture remains connected to the structured result. | Import-to-review handoff is visible, raw message text stays on the transaction, and statement/insight pages expose the next review action. |
@@ -29,13 +33,13 @@ Additional direct checks from the supplied corpus:
 
 - No copied brand assets, screenshots, source code, proprietary data, or trade dress.
 - No unsupported “AI” claims in the core statement journey. The current insight pass is a transparent heuristic layer.
-- No chart library for dashboard charts. The build standards require dependency-free SVG charts, so the charts are original, data-backed SVGs.
+- No chart library for dashboard charts. The charts remain dependency-free, original, and data-backed so the workspace stays fast.
 - No automatic cloud sync or multi-wallet model is claimed until its permissions, ownership, privacy, and recovery contracts are implemented.
 - Paste-import timestamps are marked as inferred, so time-based review heuristics do not present the import time as an observed transaction time.
 
 ## Current acceptance focus
 
-1. Paste the sample messages and receive a visible parsed-result status.
+1. Run the isolated public sample and receive a visible parsed-result status without changing personal records.
 2. Open the statement and verify provider, type, counterparty, reference, amount, fee, and balance.
 3. Search and filter the imported records without losing the raw source.
 4. Open dashboard and insights and see only values computed from the imported records.

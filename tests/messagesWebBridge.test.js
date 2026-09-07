@@ -20,6 +20,15 @@ test('capture bridge keeps only bounded non-empty message candidates', () => {
   assert.equal(batch[1].body.length, MAX_CAPTURE_TEXT_LENGTH);
 });
 
+test('capture bridge preserves an unavailable timestamp as null', () => {
+  const batch = normalizeCaptureBatch([
+    { body: 'GHS 50.00 received', timestamp: null },
+    { body: 'GHS 60.00 received', timestamp: '' },
+  ]);
+
+  assert.deepEqual(batch.map((item) => item.timestamp), [null, null]);
+});
+
 test('capture bridge caps each batch before it reaches the parser', () => {
   const batch = normalizeCaptureBatch(Array.from({ length: MAX_CAPTURE_BATCH_SIZE + 8 }, (_, index) => ({ body: `message ${index}` })));
   assert.equal(batch.length, MAX_CAPTURE_BATCH_SIZE);

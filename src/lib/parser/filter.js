@@ -16,6 +16,11 @@ const TRANSACTION_KEYWORDS = [
   'cash in', 'cash out', 'withdrawal', 'airtime', 'reversal', 'deposit'
 ];
 
+function containsKeyword(text, keyword) {
+  const pattern = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\s+/g, '\\s+');
+  return new RegExp(`(?:^|\\W)${pattern}(?=$|\\W)`, 'i').test(text);
+}
+
 export function isPromoMessage(body) {
   if (!body || typeof body !== 'string') return true;
   if (body.length < 25) return true;
@@ -31,8 +36,9 @@ export function isPromoMessage(body) {
   if (!hasTxnKeyword) return true;
 
   // Check if promo keyword present AND no clear transaction structure
-  const hasPromo = PROMO_KEYWORDS.some(kw => lower.includes(kw));
-  if (hasPromo && !lower.includes('current balance') && !lower.includes('new balance')) {
+  const hasPromo = PROMO_KEYWORDS.some(kw => containsKeyword(lower, kw));
+  const hasClearBalance = /\b(?:current\s+|new\s+|your\s+)?balance(?:\s+is)?\s*:?\s*GHS\b/i.test(body);
+  if (hasPromo && !hasClearBalance) {
     return true;
   }
 

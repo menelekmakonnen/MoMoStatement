@@ -1,10 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
   <defs>
-    <linearGradient id="gold-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#D4A847" />
-      <stop offset="100%" stop-color="#ad7a28" />
+    <linearGradient id="ledger-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E7C56B" />
+      <stop offset="100%" stop-color="#DDB447" />
     </linearGradient>
   </defs>
-  <rect width="32" height="32" rx="6" fill="#1E1E1E"/>
-  <text x="16" y="22" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="url(#gold-gradient)" text-anchor="middle">M</text>
+  <rect width="32" height="32" rx="6" fill="#171916"/>
+  <path d="M16 5 25 9v6c0 5-3.5 8.8-9 11-5.5-2.2-9-6-9-11V9z" fill="url(#ledger-gradient)"/>
+  <path d="m11 15 3 3 6-7" fill="none" stroke="#216B4B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M13 9h6" stroke="#A12B32" stroke-width="1.2" stroke-linecap="round"/>
 </svg>

@@ -129,6 +129,7 @@ chrome.tabs.onRemoved.addListener((tabId) => {
     sendGoogleState('unavailable', 'The Google Messages tab was closed.');
   }
   if (tabId === state.appTabId) {
+    sendToTab(state.googleTabId, { type: 'capture-stop', sessionId: state.sessionId });
     state.appTabId = null;
     state.sessionId = null;
     state.pendingStart = null;

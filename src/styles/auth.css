@@ -286,3 +286,17 @@
     font-size: 1.25rem;
   }
 }
+
+/* Keep authentication inside the same calm ledger language. */
+.auth-layout { background: var(--surface-base); }
+.auth-card { background: var(--surface-default); border: 1px solid var(--border-default); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); }
+.auth-card::before { display: none; }
+.auth-logo { background: var(--brand-400); color: #fff; box-shadow: var(--shadow-sm); }
+.auth-title { color: var(--ink-title); font-family: var(--font-display); }
+.auth-tabs { background: var(--surface-elevated); }
+.auth-tab { min-height: 44px; color: var(--ink-muted); }
+.auth-tab.active { color: var(--ink-title); background: var(--surface-default); box-shadow: var(--shadow-xs); }
+.auth-link { color: var(--brand-400); }
+.auth-link:hover { color: var(--brand-500); }
+.otp-input { background: var(--surface-input); border-color: var(--border-default); color: var(--ink-body); }
+.otp-input:focus { border-color: var(--brand-400); box-shadow: 0 0 0 4px var(--border-focus); }

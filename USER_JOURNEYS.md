@@ -2,9 +2,9 @@
 
 ## First-use path
 
-`landing → Start with a sample → Import → sample parse → Review statement`
+`landing → Try a sample → isolated parser result`
 
-Success means the user sees real rows from the production parser without credentials or a dead-end CTA.
+Success means the user sees real rows from the production parser without credentials, and the sample never enters personal local storage.
 
 ## Real import path
 

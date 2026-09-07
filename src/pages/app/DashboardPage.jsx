@@ -4,6 +4,7 @@ import { Icon } from '../../components/ui/Icon';
 import { filterTransactions, getTransactionStats, useTxnStore } from '../../stores/txnStore';
 
 function formatMoney(value) {
+  if (value === null || value === undefined || Number.isNaN(Number(value))) return 'Not reported';
   return new Intl.NumberFormat('en-GH', { style: 'currency', currency: 'GHS', minimumFractionDigits: 2 }).format(value || 0);
 }
 
@@ -16,6 +17,7 @@ function isCredit(type) {
 }
 
 function monthKey(date) {
+  if (!date || Number.isNaN(date.getTime())) return null;
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
 }
 
@@ -28,7 +30,10 @@ function buildMonthlyData(transactions) {
   const months = Array.from({ length: 6 }, (_, index) => new Date(now.getFullYear(), now.getMonth() - (5 - index), 1));
   return months.map((date) => {
     const key = monthKey(date);
-    const monthTransactions = transactions.filter((txn) => monthKey(new Date(txn.timestamp || txn.date)) === key);
+    const monthTransactions = transactions.filter((txn) => {
+      const timestamp = txn.timestamp ?? txn.date;
+      return monthKey(timestamp ? new Date(timestamp) : null) === key;
+    });
     return {
       label: monthLabel(date),
       income: monthTransactions.filter((txn) => isCredit(txn.type)).reduce((sum, txn) => sum + (txn.amount || 0), 0),
@@ -61,10 +66,7 @@ function BarChart({ data }) {
   );
 }
 
-function BalanceChart({ transactions }) {
-  const ordered = [...transactions].sort((a, b) => new Date(a.timestamp || a.date) - new Date(b.timestamp || b.date));
-  const points = ordered.slice(-12);
-  if (!points.length) return null;
+function BalanceSeries({ provider, points }) {
   const width = 600;
   const height = 210;
   const values = points.map((point) => Number(point.balance) || 0);
@@ -74,21 +76,60 @@ function BalanceChart({ transactions }) {
   const y = (value) => height - 28 - ((value - min) / (max - min)) * (height - 54);
   const line = points.map((point, index) => `${x(index)},${y(Number(point.balance) || 0)}`).join(' ');
   const area = `0,${height - 28} ${line} ${width},${height - 28}`;
+  const gradientId = `chart-area-gradient-${String(provider).replace(/[^a-z0-9]+/gi, '-').toLowerCase()}`;
+  const dataId = `${gradientId}-data`;
   return (
-    <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Balance over imported transactions">
+    <div className="balance-series">
+      <div className="balance-series-heading"><strong>{provider}</strong><span>{points.length} dated balance{points.length === 1 ? '' : 's'}</span></div>
+      <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={`${provider} reported balance over imported transactions`} aria-describedby={dataId}>
       <defs>
-        <linearGradient id="chart-area-gradient" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#d4a847" stopOpacity=".45" />
-          <stop offset="1" stopColor="#d4a847" stopOpacity="0" />
+        <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#DDB447" stopOpacity=".45" />
+          <stop offset="1" stopColor="#DDB447" stopOpacity="0" />
         </linearGradient>
       </defs>
       {[0.25, 0.5, 0.75].map((linePosition) => <line key={linePosition} className="chart-grid-line" x1="0" x2={width} y1={height - 28 - (height - 54) * linePosition} y2={height - 28 - (height - 54) * linePosition} />)}
-      <polygon className="chart-area" points={area} />
+      <polygon className="chart-area" points={area} fill={`url(#${gradientId})`} />
       <polyline className="chart-line" points={line} />
-      {points.map((point, index) => <circle key={`${point.id}-${index}`} cx={x(index)} cy={y(Number(point.balance) || 0)} r="4" fill="#141414" stroke="#f3d98b" strokeWidth="2" />)}
+      {points.map((point, index) => <circle key={`${point.id}-${index}`} cx={x(index)} cy={y(Number(point.balance) || 0)} r="4" fill="var(--surface-default)" stroke="var(--brand-400)" strokeWidth="2" />)}
       <text x="0" y={height - 4} fill="var(--ink-muted)" fontSize="11">Older</text>
       <text x={width} y={height - 4} textAnchor="end" fill="var(--ink-muted)" fontSize="11">Latest</text>
-    </svg>
+      </svg>
+      <ul id={dataId} className="sr-only">
+        {points.map((point, index) => {
+          const value = point.timestamp ?? point.date;
+          const date = value ? new Date(value).toLocaleDateString('en-GH') : 'Unknown date';
+          return <li key={`${point.id}-${index}`}>{date}: {formatMoney(point.balance)}</li>;
+        })}
+      </ul>
+    </div>
+  );
+}
+
+function BalanceChart({ transactions }) {
+  const balanceRecords = transactions.filter((txn) => txn.balance !== null && txn.balance !== undefined && Number.isFinite(Number(txn.balance)));
+  const seriesMap = balanceRecords.reduce((map, txn) => {
+    const dateValue = txn.timestamp ?? txn.date;
+    const date = dateValue ? new Date(dateValue) : null;
+    if (!date || Number.isNaN(date.getTime())) return map;
+    const provider = txn.provider || 'Unknown provider';
+    if (!map[provider]) map[provider] = [];
+    map[provider].push(txn);
+    return map;
+  }, {});
+  const series = Object.entries(seriesMap).map(([provider, records]) => ({
+    provider,
+    points: records.sort((a, b) => new Date(a.timestamp ?? a.date) - new Date(b.timestamp ?? b.date)).slice(-12),
+  }));
+  if (!series.length) {
+    return <div className="chart-empty">{balanceRecords.length ? 'Reported balances are present, but their source dates are unavailable. They remain inspectable in the statement instead of being connected into a timeline.' : 'No reported balances are available in the current records.'}</div>;
+  }
+  const datedBalanceCount = Object.values(seriesMap).reduce((sum, records) => sum + records.length, 0);
+  return (
+    <div className="balance-series-list">
+      {series.map((item) => <BalanceSeries key={item.provider} provider={item.provider} points={item.points} />)}
+      {balanceRecords.length > datedBalanceCount && <p className="chart-note">{balanceRecords.length - datedBalanceCount} reported balance{balanceRecords.length - datedBalanceCount === 1 ? '' : 's'} remain outside the timeline because their source date is unavailable.</p>}
+    </div>
   );
 }
 
@@ -130,7 +171,14 @@ export default function DashboardPage() {
   if (!visibleTransactions.length) return <EmptyDashboard filtered onClear={resetFilters} />;
 
   const net = stats.totalIn - stats.totalOut;
-  const latest = [...visibleTransactions].sort((a, b) => new Date(b.timestamp || b.date) - new Date(a.timestamp || a.date)).slice(0, 4);
+  const latest = [...visibleTransactions].sort((a, b) => {
+    const aDate = a.timestamp ?? a.date;
+    const bDate = b.timestamp ?? b.date;
+    if (!aDate && !bDate) return 0;
+    if (!aDate) return 1;
+    if (!bDate) return -1;
+    return new Date(bDate) - new Date(aDate);
+  }).slice(0, 4);
 
   return (
     <div className="dashboard-page">
@@ -174,7 +222,7 @@ export default function DashboardPage() {
           <div className="chart-shell"><BarChart data={monthlyData} /></div>
         </section>
         <section className="surface-card chart-card">
-          <div className="section-heading"><div><h3>Balance trail</h3><p>Latest balance reported by your provider</p></div></div>
+          <div className="section-heading"><div><h3>Balance trail</h3><p>Separate dated series for each provider</p></div></div>
           <div className="chart-shell"><BalanceChart transactions={visibleTransactions} /></div>
         </section>
         <section className="surface-card chart-card">

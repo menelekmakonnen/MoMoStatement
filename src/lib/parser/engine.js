@@ -19,7 +19,7 @@ export function parseSingleMessage(body, senderAddress = '', timestamp = null, s
   if (!body || typeof body !== 'string') return null;
 
   const hasSourceTimestamp = timestamp !== null && timestamp !== undefined && Number.isFinite(Number(timestamp));
-  const resolvedTimestamp = hasSourceTimestamp ? Number(timestamp) : Date.now();
+  const resolvedTimestamp = hasSourceTimestamp ? Number(timestamp) : null;
 
   // Filter promo messages
   if (isPromoMessage(body)) return null;

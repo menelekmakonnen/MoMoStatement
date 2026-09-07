@@ -13,7 +13,7 @@ function normalizePhone(phone) {
   return clean;
 }
 
-export function parseTelecelMessage(body, timestamp = Date.now()) {
+export function parseTelecelMessage(body, timestamp = null) {
   if (!body || typeof body !== 'string') return null;
 
   const text = body.trim();

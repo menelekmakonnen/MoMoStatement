@@ -37,7 +37,7 @@ function readBoolean(key, fallback) {
  */
 export const useUIStore = create((set, get) => ({
   /* ─── Theme ─── */
-  theme: 'dark',
+  theme: 'light',
   setTheme: (theme) => {
     try {
       localStorage.setItem('momo_theme', theme);

@@ -5,6 +5,7 @@ import { detectUnusual } from '../../lib/parser/classifier';
 import { useTxnStore } from '../../stores/txnStore';
 
 function formatMoney(value) {
+  if (value === null || value === undefined || Number.isNaN(Number(value))) return 'Not reported';
   return new Intl.NumberFormat('en-GH', { style: 'currency', currency: 'GHS', minimumFractionDigits: 2 }).format(value || 0);
 }
 
@@ -13,7 +14,9 @@ function isCredit(type) {
 }
 
 function monthKey(value) {
+  if (value === null || value === undefined || value === '') return null;
   const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
   return `${date.getFullYear()}-${date.getMonth()}`;
 }
 
@@ -33,9 +36,9 @@ export default function InsightsPage() {
     }, {});
     const unusual = detectUnusual(transactions);
     const now = new Date();
-    const current = transactions.filter((txn) => monthKey(txn.timestamp || txn.date) === monthKey(now));
+    const current = transactions.filter((txn) => monthKey(txn.timestamp ?? txn.date) === monthKey(now));
     const previousDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-    const previous = transactions.filter((txn) => monthKey(txn.timestamp || txn.date) === monthKey(previousDate));
+    const previous = transactions.filter((txn) => monthKey(txn.timestamp ?? txn.date) === monthKey(previousDate));
     const total = expenses.reduce((sum, txn) => sum + (txn.amount || 0), 0) || 1;
     return {
       categories: Object.entries(categories).sort(([, a], [, b]) => b - a).slice(0, 5).map(([name, amount]) => ({ name, amount, percent: (amount / total) * 100 })),

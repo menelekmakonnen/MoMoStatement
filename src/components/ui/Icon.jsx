@@ -73,14 +73,14 @@ export function LogoMark({ size = 32, label = 'MoMo Statement' }) {
     <svg width={size} height={size} viewBox="0 0 32 32" role="img" aria-label={label} focusable="false">
       <defs>
         <linearGradient id={gradientId} x1="4" y1="4" x2="28" y2="28">
-          <stop offset="0" stopColor="#f3d98b" />
-          <stop offset="0.48" stopColor="#d4a847" />
-          <stop offset="1" stopColor="#8c5b22" />
+          <stop offset="0" stopColor="#E7C56B" />
+          <stop offset="0.55" stopColor="#DDB447" />
+          <stop offset="1" stopColor="#A12B32" />
         </linearGradient>
       </defs>
       <path d="M16 2 28 7v8c0 7-4.7 12-12 15C8.7 27 4 22 4 15V7z" fill={`url(#${gradientId})`} />
-      <path d="m10 16 4 4 8-9" fill="none" stroke="#141414" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M11 7h10" stroke="rgba(255,255,255,.65)" strokeWidth="1.2" strokeLinecap="round" />
+      <path d="m10 16 4 4 8-9" fill="none" stroke="#216B4B" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M11 7h10" stroke="#A12B32" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
   );
 }

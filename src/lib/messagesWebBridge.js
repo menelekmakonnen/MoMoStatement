@@ -36,13 +36,17 @@ export function isMessagesCaptureEvent(event) {
 export function normalizeCaptureBatch(batch) {
   if (!Array.isArray(batch)) return [];
 
-  return batch.slice(0, MAX_CAPTURE_BATCH_SIZE).map((item) => ({
-    body: safeString(item?.body),
-    sender: safeString(item?.sender, 300),
-    timestamp: Number.isFinite(Number(item?.timestamp)) ? Number(item.timestamp) : null,
-    conversationId: safeString(item?.conversationId, 500),
-    conversationName: safeString(item?.conversationName, 500),
-  })).filter((item) => item.body);
+  return batch.slice(0, MAX_CAPTURE_BATCH_SIZE).map((item) => {
+    const rawTimestamp = item?.timestamp;
+    const numericTimestamp = rawTimestamp === null || rawTimestamp === undefined || rawTimestamp === '' ? Number.NaN : Number(rawTimestamp);
+    return {
+      body: safeString(item?.body),
+      sender: safeString(item?.sender, 300),
+      timestamp: Number.isFinite(numericTimestamp) ? numericTimestamp : null,
+      conversationId: safeString(item?.conversationId, 500),
+      conversationName: safeString(item?.conversationName, 500),
+    };
+  }).filter((item) => item.body);
 }
 
 export function listenForMessagesCapture(handler) {

@@ -19,7 +19,7 @@ function normalizePhone(phone) {
 /**
  * Parses a single MTN MoMo SMS message
  */
-export function parseMtnMessage(body, timestamp = Date.now()) {
+export function parseMtnMessage(body, timestamp = null) {
   if (!body || typeof body !== 'string') return null;
 
   const text = body.trim();

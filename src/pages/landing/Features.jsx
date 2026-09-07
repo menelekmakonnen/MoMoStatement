@@ -2,26 +2,24 @@ import React from 'react';
 import { Icon } from '../../components/ui/Icon';
 
 const FEATURES = [
-  { title: 'Provider-aware parsing', desc: 'MTN, Telecel, and AirtelTigo formats stay distinct so the source remains understandable.', icon: 'layers' },
-  { title: 'Cash-flow clarity', desc: 'See received, sent, fees, and the latest reported balance without hiding the exact rows behind a chart.', icon: 'activity' },
-  { title: 'Evidence-led insights', desc: 'Review signals point you back to the underlying transaction instead of pretending a heuristic is financial advice.', icon: 'insights' },
-  { title: 'Local by default', desc: 'Imported records stay in this browser until you deliberately choose an export or connected action.', icon: 'lock' },
-  { title: 'Searchable statement', desc: 'Find a counterparty, reference, phone number, provider, type, or date range in a few taps.', icon: 'search' },
-  { title: 'Clean handoff', desc: 'Create a readable PDF, exact CSV, or faithful JSON backup for your next decision or reviewer.', icon: 'download' },
+  { title: 'The source stays attached', desc: 'Open the original message behind a parsed row. Provider, reference, fee, tax, and balance remain inspectable.', icon: 'document', label: 'Traceable by design' },
+  { title: 'The number stays honest', desc: 'Reported balances are labelled as reported. Unknown dates stay unknown, and heuristics point back to supporting rows.', icon: 'checkCircle', label: 'Evidence before polish' },
+  { title: 'The handoff is yours', desc: 'Search, filter, and export a clean PDF, CSV, or JSON copy from the same local workspace.', icon: 'download', label: 'Ready when you are' },
 ];
 
 const Features = () => (
   <section id="features" className="landing-section">
     <div className="landing-shell">
       <div className="public-section-head">
-        <span className="public-eyebrow">A small system with useful depth</span>
-        <h2>Everything you need to make the record useful.</h2>
-        <p>The surface stays calm. The detail is there when you need to verify a number, understand a pattern, or hand the statement to someone else.</p>
+        <span className="public-eyebrow">What earns trust</span>
+        <h2>Clear at a glance. Inspectable when it matters.</h2>
+        <p>The product earns its place by making the path from raw message to usable record easy to follow.</p>
       </div>
       <div className="features-grid">
         {FEATURES.map((feature) => (
           <article className="feature-card" key={feature.title}>
             <div className="feature-icon-container"><Icon name={feature.icon} size={22} /></div>
+            <span className="feature-label">{feature.label}</span>
             <h3>{feature.title}</h3>
             <p>{feature.desc}</p>
           </article>

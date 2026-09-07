@@ -22,7 +22,7 @@ const SuperAdminDashboard = lazy(() => import('./pages/admin/SuperAdminDashboard
 const GodModeDashboard = lazy(() => import('./pages/admin/GodModeDashboard'));
 
 /**
- * Loading fallback — ghost-box skeleton per §10.4 (never spinners)
+ * Loading fallback — content-shaped skeleton that keeps route changes calm.
  */
 function PageLoader() {
   return (
@@ -58,7 +58,8 @@ export default function App() {
   const setTheme = useUIStore((s) => s.setTheme);
 
   useEffect(() => {
-    const saved = localStorage.getItem('momo_theme') || 'dark';
+    let saved = 'light';
+    try { saved = localStorage.getItem('momo_theme') || 'light'; } catch { /* safe storage — keep the accessible default */ }
     setTheme(saved);
     document.documentElement.setAttribute('data-theme', saved);
   }, [setTheme]);

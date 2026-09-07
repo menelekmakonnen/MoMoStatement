@@ -36,9 +36,9 @@ Exception states are `invalid-input`, `partial-parse`, `empty-result`, `helper-u
 
 The machine-readable contracts are in `CAPABILITY_CONTRACTS.json`. The core path is local, unauthenticated, and free in the current beta. It reports unsupported or empty input rather than claiming a successful parse.
 
-## 7. Original interaction grammar
+## 7. Product interaction grammar
 
-The product uses an evidence-console grammar: charcoal background, gold accent, Inter typography, compact glass surfaces, semantic SVG icons, strong numeric hierarchy, and short CSS transitions. The signature interaction is **source-backed review**: each transaction can open to its parsed fields and original message. The interface deliberately excludes emoji UI, fake AI insight claims, decorative charts that do not explain a value, dead CTA buttons, and unsupported PDF-import promises. Keyboard focus, native controls, responsive bottom navigation, and `prefers-reduced-motion` are required.
+The current product direction is the image-led Ghana-rooted ledger in `docs/PRODUCT_DIRECTION.md`: off-white working surfaces, off-black framing, red/gold/green meaning, strong numeric hierarchy, semantic SVG icons, short state-driven transitions, and source-backed review. Each transaction can open to its parsed fields and original message. The interface deliberately excludes emoji UI, fake AI insight claims, decorative charts that do not explain a value, dead CTA buttons, and unsupported PDF-import promises. Keyboard focus, native controls, responsive bottom navigation, and `prefers-reduced-motion` are required.
 
 ## 8. Acceptance contract
 

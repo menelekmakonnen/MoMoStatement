@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { Icon, LogoMark } from '../ui/Icon';
 import { useUIStore } from '../../stores/uiStore';
@@ -12,12 +12,19 @@ const NAV_ITEMS = [
   { path: '/app/settings', label: 'Settings', hint: 'Tune workspace', icon: 'settings' },
 ];
 
+const MOBILE_PRIMARY_ITEMS = NAV_ITEMS.slice(0, 3).map((item) => (
+  item.label === 'Dashboard' ? { ...item, label: 'Overview', hint: 'See the overview' } : item
+));
+const MOBILE_MORE_ITEMS = NAV_ITEMS.slice(3);
+
 const MIN_WIDTH = 224;
 const MAX_WIDTH = 360;
 
 export default function Sidebar() {
   const location = useLocation();
   const [isResizing, setIsResizing] = useState(false);
+  const [mobileMoreOpen, setMobileMoreOpen] = useState(false);
+  const mobileMoreRef = useRef(null);
   const sidebarCollapsed = useUIStore((state) => state.sidebarCollapsed);
   const setSidebarCollapsed = useUIStore((state) => state.setSidebarCollapsed);
   const sidebarWidth = useUIStore((state) => state.sidebarWidth);
@@ -40,6 +47,22 @@ export default function Sidebar() {
       document.body.classList.remove('is-resizing-sidebar');
     };
   }, [isResizing, setSidebarWidth]);
+
+  useEffect(() => {
+    if (!mobileMoreOpen) return undefined;
+    const closeOnEscape = (event) => {
+      if (event.key === 'Escape') setMobileMoreOpen(false);
+    };
+    const closeOnOutsidePointer = (event) => {
+      if (!mobileMoreRef.current?.contains(event.target)) setMobileMoreOpen(false);
+    };
+    document.addEventListener('keydown', closeOnEscape);
+    document.addEventListener('pointerdown', closeOnOutsidePointer);
+    return () => {
+      document.removeEventListener('keydown', closeOnEscape);
+      document.removeEventListener('pointerdown', closeOnOutsidePointer);
+    };
+  }, [mobileMoreOpen]);
 
   const handleLogoClick = (event) => {
     if (location.pathname === '/app/dashboard') {
@@ -64,7 +87,7 @@ export default function Sidebar() {
         </NavLink>
       </div>
 
-      <nav className="sidebar-nav" aria-label="Workspace">
+      <nav className="sidebar-nav sidebar-nav-desktop" aria-label="Workspace">
         <span className="sidebar-section-label">Workspace</span>
         {NAV_ITEMS.map((item) => (
           <NavLink
@@ -82,6 +105,44 @@ export default function Sidebar() {
             <Icon name="chevronRight" size={15} className="sidebar-nav-arrow" />
           </NavLink>
         ))}
+      </nav>
+
+      <nav className="sidebar-nav sidebar-nav-mobile" aria-label="Mobile workspace navigation">
+        {MOBILE_PRIMARY_ITEMS.map((item) => (
+          <NavLink
+            key={item.path}
+            to={item.path}
+            end
+            className={({ isActive }) => `mobile-nav-item ${isActive ? 'active' : ''}`}
+            aria-label={item.label}
+          >
+            <Icon name={item.icon} size={20} />
+            <span>{item.label}</span>
+          </NavLink>
+        ))}
+        <div className="mobile-more-wrap" ref={mobileMoreRef}>
+          <button
+            className={`mobile-nav-item mobile-more-trigger ${mobileMoreOpen || MOBILE_MORE_ITEMS.some((item) => location.pathname === item.path) ? 'active' : ''}`}
+            type="button"
+            aria-expanded={mobileMoreOpen}
+            aria-controls="mobile-more-menu"
+            aria-current={MOBILE_MORE_ITEMS.some((item) => location.pathname === item.path) ? 'page' : undefined}
+            onClick={() => setMobileMoreOpen((open) => !open)}
+          >
+            <Icon name="more" size={20} />
+            <span>More</span>
+          </button>
+          {mobileMoreOpen && (
+            <div className="mobile-more-menu" id="mobile-more-menu" aria-label="Secondary workspace navigation">
+              {MOBILE_MORE_ITEMS.map((item) => (
+                <NavLink key={item.path} to={item.path} end className={({ isActive }) => `mobile-more-item ${isActive ? 'active' : ''}`} aria-current={location.pathname === item.path ? 'page' : undefined} onClick={() => setMobileMoreOpen(false)}>
+                  <Icon name={item.icon} size={18} />
+                  <span>{item.label}</span>
+                </NavLink>
+              ))}
+            </div>
+          )}
+        </div>
       </nav>
 
       <div className="sidebar-footer">

@@ -35,15 +35,14 @@ const LiveDemo = () => {
     <section id="demo" className="landing-section landing-section-muted">
       <div className="landing-shell">
         <div className="public-section-head">
-          <span className="public-eyebrow">Try the real parser</span>
-          <h2>See the first useful result before you sign in.</h2>
-          <p>This demo uses the same parser engine as the workspace. Change the text, run it again, and inspect what the app can actually identify.</p>
+          <span className="public-eyebrow">A working sample</span>
+          <h2>See the transformation before you import anything personal.</h2>
+          <p>This uses the same parser engine as the workspace. Change the text, run it again, and inspect what the app can actually identify.</p>
         </div>
 
         <div className="demo-layout">
           <div className="demo-panel">
-            <h3>Paste sample messages</h3>
-            <p>Use one or more messages. The parser keeps the source attached to each result.</p>
+            <div className="demo-heading-row"><div><h3>Paste sample messages</h3><p>Use one or more messages. The parser keeps the source attached to each result.</p></div><span className="demo-source-badge">Same parser</span></div>
             <label className="sr-only" htmlFor="landing-demo-input">Sample MoMo messages</label>
             <textarea id="landing-demo-input" className="demo-textarea" value={input} onChange={(event) => setInput(event.target.value)} spellCheck="false" />
             <div className="demo-panel-footer">

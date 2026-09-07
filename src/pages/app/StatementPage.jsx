@@ -32,10 +32,12 @@ const TYPE_LABELS = Object.fromEntries(TYPE_OPTIONS);
 const PROVIDER_LABELS = { MTN: 'MTN', TELECEL: 'Telecel', AIRTELTIGO: 'AirtelTigo' };
 
 function formatMoney(value) {
+  if (value === null || value === undefined || Number.isNaN(Number(value))) return 'Not reported';
   return new Intl.NumberFormat('en-GH', { style: 'currency', currency: 'GHS', minimumFractionDigits: 2 }).format(value || 0);
 }
 
 function formatDate(value) {
+  if (value === null || value === undefined || value === '') return 'Unknown date';
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? 'Unknown date' : new Intl.DateTimeFormat('en-GH', { day: '2-digit', month: 'short', year: 'numeric' }).format(date);
 }
@@ -62,7 +64,7 @@ function isCredit(type) {
 function TransactionRow({ txn }) {
   const credit = isCredit(txn.type);
   const name = getCounterparty(txn);
-  const timestamp = txn.timestamp || txn.date;
+  const timestamp = txn.timestamp ?? txn.date;
   const rawSource = txn.rawBody || txn.raw || txn.body;
   return (
     <article className="transaction-row">
@@ -72,7 +74,7 @@ function TransactionRow({ txn }) {
         </span>
         <div className="transaction-name">
           <strong>{name}</strong>
-          <span>{formatDate(timestamp)} · {PROVIDER_LABELS[txn.provider] || txn.provider} · {formatType(txn.type)}</span>
+          <span>{formatDate(timestamp)}{txn.timestampIsInferred ? ' · inferred' : ''} · {PROVIDER_LABELS[txn.provider] || txn.provider} · {formatType(txn.type)}</span>
         </div>
       </div>
       <div className="transaction-meta">
@@ -92,6 +94,8 @@ function TransactionRow({ txn }) {
             <div><dt>Fee</dt><dd>{formatMoney(txn.fee)}</dd></div>
             <div><dt>Tax</dt><dd>{formatMoney(txn.tax)}</dd></div>
             <div><dt>Reference</dt><dd>{txn.reference || txn.txnId || 'Not available'}</dd></div>
+            <div><dt>Reported balance</dt><dd>{formatMoney(txn.balance)}</dd></div>
+            <div><dt>Date provenance</dt><dd>{txn.timestampIsInferred ? 'Inferred at import' : formatDate(timestamp)}</dd></div>
             <div><dt>Source</dt><dd>{txn.source || 'Imported message'}</dd></div>
           </dl>
           {rawSource && <div className="transaction-raw"><span>Original source</span><pre>{rawSource}</pre></div>}
@@ -147,7 +151,7 @@ export default function StatementPage() {
         <section className="surface-card empty-state-card">
           <span className="empty-icon"><Icon name="document" size={26} /></span>
           <h2>No transactions yet</h2>
-          <p>Paste a few MoMo messages or load the sample fixture to see the full review flow.</p>
+          <p>Paste a few MoMo messages or try the isolated sample on the home page to see the full review flow.</p>
           <Link className="btn btn-primary" to="/app/import"><Icon name="upload" size={17} /> Import messages</Link>
         </section>
       </div>

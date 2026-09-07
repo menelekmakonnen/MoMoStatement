@@ -64,8 +64,8 @@ export default function SettingsPage() {
         <section className="surface-card settings-card">
           <h3>Appearance</h3>
           <div className="settings-row">
-            <div><strong>Theme</strong><p>Use a dark workspace for long statement reviews.</p></div>
-            <button className="toggle active" type="button" aria-label="Toggle dark theme" aria-pressed={theme === 'dark'} onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
+            <div><strong>Theme</strong><p>Choose a light or dark workspace for long statement reviews.</p></div>
+            <button className={`toggle ${theme === 'dark' ? 'active' : ''}`} type="button" aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`} aria-pressed={theme === 'dark'} onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
               <span className="sr-only">{theme === 'dark' ? 'Dark theme on' : 'Dark theme off'}</span>
             </button>
           </div>

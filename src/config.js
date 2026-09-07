@@ -129,11 +129,13 @@ const CONFIG = {
   
   /* ─── Theme ─── */
   THEME: {
-    BRAND_HEX: '#D4A847',                // Warm gold
-    DARK_BASE: '#141414',                  // Charcoal black
-    DARK_SURFACE: '#1E1E1E',
-    DARK_ELEVATED: '#262626',
-    SPRING_EASE: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+    BRAND_HEX: '#DDB447',                // Gold primary action
+    ACCENT_HEX: '#A12B32',               // Red accent / outgoing state
+    SUCCESS_HEX: '#216B4B',              // Green received state
+    DARK_BASE: '#171916',                // Off-black canvas
+    DARK_SURFACE: '#232621',
+    DARK_ELEVATED: '#2D302A',
+    DEFAULT_EASE: 'cubic-bezier(.2, .8, .2, 1)',
   },
   
   /* ─── Emails ─── */

@@ -48,7 +48,7 @@ export default class ErrorBoundary extends Component {
         <div style={styles.container}>
           <div style={styles.card}>
             {/* Shield SVG icon */}
-            <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#D4A847" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={styles.icon}>
+            <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#A12B32" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={styles.icon}>
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
               <line x1="12" y1="8" x2="12" y2="12" />
               <line x1="12" y1="16" x2="12.01" y2="16" />
@@ -86,13 +86,12 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: '100vh',
-    background: '#141414',
+    background: '#171916',
     padding: '24px',
   },
   card: {
-    background: 'rgba(30, 30, 30, 0.8)',
-    backdropFilter: 'blur(16px) saturate(180%)',
-    border: '1px solid rgba(255, 255, 255, 0.08)',
+    background: '#232621',
+    border: '1px solid rgba(247, 245, 239, 0.16)',
     borderRadius: '14px',
     padding: '48px',
     maxWidth: '480px',
@@ -103,22 +102,22 @@ const styles = {
     margin: '0 auto 24px',
   },
   title: {
-    color: '#ffffff',
+    color: '#F7F5EF',
     fontSize: '24px',
     fontWeight: 600,
     marginBottom: '12px',
-    fontFamily: "'Inter Variable', 'Inter', sans-serif",
+    fontFamily: "'Bricolage Grotesque Variable', 'Bricolage Grotesque', sans-serif",
   },
   description: {
-    color: '#c0c0c0',
+    color: '#BAC1B5',
     fontSize: '14px',
     lineHeight: 1.6,
     marginBottom: '20px',
-    fontFamily: "'Inter Variable', 'Inter', sans-serif",
+    fontFamily: "'Public Sans Variable', 'Public Sans', sans-serif",
   },
   errorDetail: {
-    background: 'rgba(239, 68, 68, 0.1)',
-    color: '#f87171',
+    background: 'rgba(161, 43, 50, 0.16)',
+    color: '#FF9B91',
     padding: '12px',
     borderRadius: '8px',
     fontSize: '12px',
@@ -134,25 +133,25 @@ const styles = {
     justifyContent: 'center',
   },
   primaryBtn: {
-    background: 'linear-gradient(135deg, #D4A847, #ad7a28)',
-    color: '#141414',
+    background: '#DDB447',
+    color: '#171916',
     border: 'none',
     padding: '12px 24px',
     borderRadius: '10px',
     fontWeight: 600,
     fontSize: '14px',
     cursor: 'pointer',
-    fontFamily: "'Inter Variable', 'Inter', sans-serif",
+    fontFamily: "'Public Sans Variable', 'Public Sans', sans-serif",
   },
   secondaryBtn: {
     background: 'transparent',
-    color: '#e0e0e0',
-    border: '1px solid rgba(255, 255, 255, 0.1)',
+    color: '#F7F5EF',
+    border: '1px solid rgba(247, 245, 239, 0.18)',
     padding: '12px 24px',
     borderRadius: '10px',
     fontWeight: 500,
     fontSize: '14px',
     cursor: 'pointer',
-    fontFamily: "'Inter Variable', 'Inter', sans-serif",
+    fontFamily: "'Public Sans Variable', 'Public Sans', sans-serif",
   },
 };

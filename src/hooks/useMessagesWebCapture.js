@@ -5,7 +5,7 @@ import {
   listenForMessagesCapture,
   postMessagesCaptureCommand,
 } from '../lib/messagesWebBridge';
-import { useTxnStore } from '../stores/txnStore';
+import { previewTransactions, useTxnStore } from '../stores/txnStore';
 
 const INITIAL_STATE = {
   status: 'checking',
@@ -15,6 +15,10 @@ const INITIAL_STATE = {
   matched: 0,
   imported: 0,
   threads: 0,
+  pendingTransactions: [],
+  duplicateCount: 0,
+  ambiguousCount: 0,
+  ambiguousTransactionIds: [],
   completedAt: null,
 };
 
@@ -30,15 +34,21 @@ function parseCapturedItem(item) {
   };
 }
 
+function isActiveCaptureStatus(status) {
+  return ['starting', 'running', 'stopping'].includes(status);
+}
+
 export function useMessagesWebCapture() {
-  const addTransactions = useTxnStore((state) => state.addTransactions);
   const sessionRef = useRef(null);
+  const pendingRef = useRef([]);
   const [state, setState] = useState(INITIAL_STATE);
 
   useEffect(() => {
     const handleEvent = (event) => {
       if (event.type === 'bridge-ready') {
-        setState((current) => ({ ...current, status: 'ready', message: 'Capture helper ready on this device.' }));
+        setState((current) => isActiveCaptureStatus(current.status)
+          ? current
+          : { ...current, status: 'ready', message: 'Capture helper ready on this device.' });
         return;
       }
 
@@ -50,7 +60,9 @@ export function useMessagesWebCapture() {
           unavailable: ['awaiting-google', 'Open Google Messages Web and finish pairing before starting the scan.'],
         };
         const [status, message] = stateMap[event.state] || stateMap.unavailable;
-        setState((current) => ({ ...current, status, message }));
+        setState((current) => isActiveCaptureStatus(current.status)
+          ? current
+          : { ...current, status, message });
         return;
       }
 
@@ -78,13 +90,17 @@ export function useMessagesWebCapture() {
         const parsed = event.batch.map(parseCapturedItem).filter(Boolean);
         if (!parsed.length) return;
 
-        const before = useTxnStore.getState().transactions.length;
-        addTransactions(parsed);
-        const after = useTxnStore.getState().transactions.length;
+        const existing = useTxnStore.getState().transactions;
+        const preview = previewTransactions([...existing, ...pendingRef.current], parsed);
+        pendingRef.current = [...pendingRef.current, ...preview.newTransactions];
         setState((current) => ({
           ...current,
           status: 'running',
-          imported: current.imported + Math.max(0, after - before),
+          pendingTransactions: pendingRef.current,
+          imported: pendingRef.current.length,
+          duplicateCount: current.duplicateCount + preview.duplicateCount,
+          ambiguousCount: current.ambiguousCount + preview.ambiguousCount,
+          ambiguousTransactionIds: [...current.ambiguousTransactionIds, ...preview.ambiguousTransactionIds],
           matched: Math.max(current.matched, Number(event.matched) || current.matched),
         }));
         return;
@@ -94,7 +110,7 @@ export function useMessagesWebCapture() {
         setState((current) => ({
           ...current,
           status: 'completed',
-          message: event.message || 'Capture complete. Review the imported rows before exporting.',
+          message: event.message || 'Capture complete. Review the staged rows before adding them.',
           inspected: Number(event.inspected) || current.inspected,
           matched: Number(event.matched) || current.matched,
           threads: Number(event.threads) || current.threads,
@@ -107,7 +123,7 @@ export function useMessagesWebCapture() {
         setState((current) => ({
           ...current,
           status: 'completed',
-          message: event.message || 'Capture stopped. Review any rows already imported.',
+          message: event.message || 'Capture stopped. Review any staged rows before adding them.',
         }));
         return;
       }
@@ -126,11 +142,12 @@ export function useMessagesWebCapture() {
         : current);
     }, 4500);
     return () => {
+      if (sessionRef.current) postMessagesCaptureCommand('capture-stop', { sessionId: sessionRef.current });
       cleanup();
       window.clearInterval(retryTimer);
       window.clearTimeout(unavailableTimer);
     };
-  }, [addTransactions]);
+  }, []);
 
   const openGoogleMessages = useCallback(() => {
     window.open('https://messages.google.com/web/', '_blank', 'noopener,noreferrer');
@@ -139,7 +156,7 @@ export function useMessagesWebCapture() {
   const startCapture = useCallback((providers) => {
     const sessionId = createCaptureSessionId();
     sessionRef.current = sessionId;
-    setState((current) => ({ ...INITIAL_STATE, ...current, status: 'starting', sessionId, message: 'Starting a local capture session…', inspected: 0, matched: 0, imported: 0, threads: 0 }));
+    setState((current) => ({ ...INITIAL_STATE, ...current, status: 'starting', sessionId, message: 'Starting a local capture session…', inspected: 0, matched: 0, imported: pendingRef.current.length, pendingTransactions: pendingRef.current, duplicateCount: 0, ambiguousCount: 0, ambiguousTransactionIds: current.ambiguousTransactionIds, threads: 0 }));
     postMessagesCaptureCommand('capture-start', { sessionId, providers });
   }, []);
 
@@ -148,5 +165,32 @@ export function useMessagesWebCapture() {
     setState((current) => ({ ...current, status: 'stopping', message: 'Stopping after the current local batch…' }));
   }, []);
 
-  return { ...state, openGoogleMessages, startCapture, stopCapture };
+  const addCapturedTransactions = useCallback((selectedIds) => {
+    const selectedSet = Array.isArray(selectedIds) ? new Set(selectedIds) : null;
+    const selectedTransactions = selectedSet
+      ? pendingRef.current.filter((transaction) => selectedSet.has(transaction.id))
+      : pendingRef.current;
+    if (!selectedTransactions.length) return { addedCount: 0, persisted: true };
+    const outcome = useTxnStore.getState().addTransactions(selectedTransactions);
+    const consumedIds = new Set(selectedTransactions.map((transaction) => transaction.id));
+    pendingRef.current = pendingRef.current.filter((transaction) => !consumedIds.has(transaction.id));
+    setState((current) => ({
+      ...current,
+      pendingTransactions: pendingRef.current,
+      imported: pendingRef.current.length,
+      duplicateCount: pendingRef.current.length ? current.duplicateCount : 0,
+      ambiguousCount: pendingRef.current.length ? current.ambiguousCount : 0,
+      ambiguousTransactionIds: pendingRef.current.length
+        ? current.ambiguousTransactionIds.filter((id) => !consumedIds.has(id))
+        : [],
+    }));
+    return outcome;
+  }, []);
+
+  const discardCapturedTransactions = useCallback(() => {
+    pendingRef.current = [];
+    setState((current) => ({ ...current, pendingTransactions: [], imported: 0, duplicateCount: 0, ambiguousCount: 0, ambiguousTransactionIds: [] }));
+  }, []);
+
+  return { ...state, openGoogleMessages, startCapture, stopCapture, addCapturedTransactions, discardCapturedTransactions };
 }

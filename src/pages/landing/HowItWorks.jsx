@@ -3,18 +3,18 @@ import { Icon } from '../../components/ui/Icon';
 
 const STEPS = [
   {
-    title: 'Get your messages',
-    desc: 'Request a statement from your provider or copy the transaction alerts already on your phone.',
-    icon: 'download',
-  },
-  {
-    title: 'Paste or upload',
-    desc: 'Use the guided import tabs. Plain text and SMS Backup & Restore XML are parsed in this browser.',
+    title: 'Choose your source',
+    desc: 'Paste a conversation, upload a TXT/XML archive, or use the optional desktop Messages Web helper.',
     icon: 'upload',
   },
   {
-    title: 'Review and export',
-    desc: 'Check balances, fees, categories, and original source text before you create a clean statement.',
+    title: 'See what was found',
+    desc: 'The preview separates new rows, duplicates, unsupported messages, and anything that needs review.',
+    icon: 'eye',
+  },
+  {
+    title: 'Keep the record',
+    desc: 'Review amounts, fees, balances, and source text, then export the statement you actually need.',
     icon: 'checkCircle',
   },
 ];
@@ -23,9 +23,9 @@ const HowItWorks = () => (
   <section id="how-it-works" className="landing-section landing-section-muted">
     <div className="landing-shell">
       <div className="public-section-head">
-        <span className="public-eyebrow">A calmer first run</span>
-        <h2>From noisy alerts to a useful record.</h2>
-        <p>Each step has one job, a visible result, and a safe way back. You can start with sample data before importing anything personal.</p>
+        <span className="public-eyebrow">Three clear steps</span>
+        <h2>From messages to a statement you can inspect.</h2>
+        <p>Start with a sample or bring your own messages. Every step makes the next decision obvious.</p>
       </div>
       <div className="how-it-works-grid">
         {STEPS.map((step, index) => (

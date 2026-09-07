@@ -272,9 +272,13 @@
   function collectVisibleMessages(conversation, providers, context, emit) {
     const candidates = getMessageCandidates(conversation.name);
     const batch = [];
+    let newCandidateCount = 0;
     candidates.forEach((candidate) => {
       const key = `${candidate.sender}|${candidate.timestamp || ''}|${candidate.body}`;
-      if (!context.inspected.has(key)) context.inspected.add(key);
+      if (!context.inspected.has(key)) {
+        context.inspected.add(key);
+        newCandidateCount += 1;
+      }
       if (!isTransactionText(candidate.body)) return;
       if (!matchesSelectedProvider(`${conversation.name} ${candidate.sender} ${candidate.body}`, providers)) return;
       if (context.sent.has(key)) return;
@@ -296,7 +300,7 @@
         matched: context.matched,
       });
     }
-    return candidates.length;
+    return newCandidateCount;
   }
 
   async function captureConversation(conversation, providers, context, emit) {
@@ -318,11 +322,11 @@
       dispatchScroll(container);
       await wait(400);
 
-      const candidateCount = collectVisibleMessages(conversation, providers, context, emit);
+      const newCandidateCount = collectVisibleMessages(conversation, providers, context, emit);
 
       const atTop = container.scrollTop <= 2;
       const grew = container.scrollHeight > beforeHeight;
-      const foundNew = context.inspected.size > beforeInspected || candidateCount > 0;
+      const foundNew = context.inspected.size > beforeInspected || newCandidateCount > 0;
       if (atTop) {
         await wait(700);
         if (container.scrollHeight > beforeHeight) {

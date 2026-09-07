@@ -2,7 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const scrollTo = (id) => {
-  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+  document.getElementById(id)?.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
 };
 
 const Footer = () => (
@@ -11,7 +12,7 @@ const Footer = () => (
       <div className="footer-grid">
         <div>
           <h4>MoMo Statement</h4>
-          <p>Your private, reviewable workspace for Mobile Money transactions. Built for Ghana, with the source kept close to the number.</p>
+          <p>A clear, local-first workspace for Ghanaian Mobile Money messages, with the source kept close to the number.</p>
         </div>
         <div>
           <h4>Product</h4>
